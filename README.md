@@ -236,8 +236,13 @@ IE 及旧版内核不支持，不做兼容。
 
 ```
 mingdemo/
-├── index.html     # 站点全部内容（HTML + CSS + JS 内联，单文件交付）
-└── README.md      # 本文档
+├── index.html              # 站点全部内容（HTML + CSS + JS 内联，单文件交付）
+├── README.md               # 本文档
+├── PUSH_TO_GITHUB.md       # 本机 GitHub 加速链路（Watt Toolkit）的推送指南与故障排查对照表
+├── .gitignore              # 忽略 dist-artifacts/ 等推送兜底产物
+└── tools/
+    └── push-github.ps1     # 推送加固脚本：环境探测 → 连通性预检 → 加固参数推送 → 失败自动 bundle 兜底
 ```
 
-仓库不含构建脚本、依赖清单与自动化测试——单文件交付即是设计目标。
+站点本身仍是**单文件零依赖**：`index.html` 之外的文件都只是开发与运维辅助，不参与页面运行，
+单独拷走 `index.html` 即可完整使用。仓库不含构建步骤、依赖清单与自动化测试。
