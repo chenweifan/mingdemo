@@ -238,11 +238,22 @@ IE 及旧版内核不支持，不做兼容。
 mingdemo/
 ├── index.html              # 站点全部内容（HTML + CSS + JS 内联，单文件交付）
 ├── README.md               # 本文档
+├── DESIGN_PROMPTS.md       # 界面 UI 组件生图提示词包（风格基准图 → 回灌 CSS 的完整工作流）
 ├── PUSH_TO_GITHUB.md       # 本机 GitHub 加速链路（Watt Toolkit）的推送指南与故障排查对照表
-├── .gitignore              # 忽略 dist-artifacts/ 等推送兜底产物
+├── .gitignore              # 忽略 dist-artifacts/ 与参考图本体
+├── design/refs/            # 风格参考图放置目录（含命名约定，图片不入库）
 └── tools/
     └── push-github.ps1     # 推送加固脚本：环境探测 → 连通性预检 → 加固参数推送 → 失败自动 bundle 兜底
 ```
 
 站点本身仍是**单文件零依赖**：`index.html` 之外的文件都只是开发与运维辅助，不参与页面运行，
 单独拷走 `index.html` 即可完整使用。仓库不含构建步骤、依赖清单与自动化测试。
+
+### 界面风格的迭代方式
+
+视觉语言的调整有两条路径：
+
+1. **直接改令牌**：配色、圆角、间距、光效全部由 `:root` 的令牌驱动，改一处即全站生效；
+2. **用参考图校准**：按 `DESIGN_PROMPTS.md` 生成风格板与组件图，放入 `design/refs/`，
+   再按该文档第 7 节的映射表把图中特征换算成令牌值（配色、玻璃透明度、发丝高光、发光半径、信息密度）。
+

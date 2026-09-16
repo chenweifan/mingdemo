@@ -1,6 +1,10 @@
 # 推送兜底产物（git bundle），不入库
 dist-artifacts/
 
+# 风格参考图：只保留命名约定说明，图片本体不入库（体积大且不属于单文件交付物）
+design/refs/*
+!design/refs/README.md
+
 # 编辑器 / 系统杂项
 .vscode/
 .idea/
