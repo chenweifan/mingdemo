@@ -71,14 +71,20 @@ npx serve .                       # 或使用 Node 生态的静态服务器
 
 | 令牌 | 值 | 用途 |
 |---|---|---|
-| `--surface-abyss` | `#05080d` | 页面底 |
-| `--surface-sunken` | `#0a1017` | 输入框 / 凹槽 |
-| `--surface-base` | `#0f1823` | 卡片默认 |
-| `--surface-raised` | `#16212e` | 悬浮 / 激活卡片 |
-| `--surface-overlay` | `#1c2a39` | 模态 / 浮层 |
-| `--stroke-subtle` / `--stroke-base` / `--stroke-strong` | `rgba(120,180,200,.08/.14/.24)` | 三级描边 |
-| `--stroke-accent` | `rgba(79,209,197,.45)` | 强调描边 |
-| `--text-high` / `--text-body` / `--text-muted` / `--text-faint` | `#eaf2f8` 12:1 · `#b8c7d6` 7.2:1 · `#7d92a6` 4.6:1 · `#55697c`（仅装饰） | 文本层级 |
+| `--surface-abyss` | `#05080d` | 页面底（ABYSS NAVY，与参考图一致） |
+| `--surface-sunken` | `#0f1829` | 输入框 / 凹槽（SUNKEN PANEL） |
+| `--surface-base` | `#1c2a39` | 卡片默认（BASE PANEL） |
+| `--surface-raised` | `#2a3f54` | 悬浮 / 激活卡片（RAISED PANEL） |
+| `--surface-overlay` | `#33475e` | 模态 / 浮层（参考图值 `#4F647A` 为保证正文 ≥5.5:1 下调） |
+| `--surface-line` | `#4f647a` | 参考图 OVERLAY 值，用于高对比描边与图标底 |
+| `--surface-deep` | `#080d14` | 比页面更深：进度条槽、内嵌区域 |
+| `--stroke-subtle` / `--stroke-base` / `--stroke-strong` | `rgba(120,180,200,.14/.24/.40)` | 三级描边（参考图描边明显更亮更青） |
+| `--stroke-accent` | `rgba(79,209,197,.55)` | 强调描边 |
+| `--text-high` / `--text-body` / `--text-muted` / `--text-faint` | `#eaf2f8` 12:1 · `#b8c7d6` 8:1 · `#7d92a6` 4.5:1 · `#55697c`（仅装饰） | 文本层级（对比度按新的表面色重算） |
+
+> 表面层级与描边已按 `design/refs/` 的风格参考图校准（原规范值以行内注释保留在 `:root` 中）。
+> 参考图的第 5 级色 `#4F647A` 未直接用作模态底色——它与正文文本的对比度只有 3.5:1，
+> 低于 WCAG AA，故下调为 `#33475E`（正文 5.5:1 / 高亮文本 7.9:1），原值改作高对比描边色。
 
 ### 强调色与元素色
 
@@ -169,7 +175,7 @@ npx serve .                       # 或使用 Node 生态的静态服务器
 | 1 | 仅原生 HTML/CSS/JS，禁外部资源 | 全文 0 个外部请求：无 CDN、无字体、无图片、无图标库 |
 | 2 | 单文件、内联 style/script、双击可运行 | 单个 `index.html`，`file://` 下功能完整 |
 | 3 | 图标用内联 SVG / CSS，禁 emoji 当图标 | 28 个 SVG 图标字形 + 直接书写的品牌标记 / 汉堡 / 空态线稿 / 评分环形；纯 CSS 绘制头像、事件圆点、波形；无 emoji |
-| 4 | 色值 / 间距 / 圆角 / 动效必须走 CSS 变量 | 全部 21 处十六进制色值（19 个唯一值）与所有 `rgba()` 仅出现在 `:root` 令牌块（第 20 – 116 行），组件内 0 裸值 |
+| 4 | 色值 / 间距 / 圆角 / 动效必须走 CSS 变量 | 全部 32 处十六进制色值（30 个唯一值）与所有 `rgba()` 仅出现在 `:root` 令牌块，组件内 0 裸值（全文 1202 处 `var()` 引用） |
 | 5 | 数值型文本使用 `tabular-nums` | `body` 全局继承 + `.num, time, output` 显式声明 |
 | 6 | 支持 `prefers-reduced-motion: reduce` | 第 764 行起的 A11Y 区块全局关闭动画与过渡 |
 | 7 | 交互元素具备四态 | `.btn` / `.chip` / `.input` / `.icon-btn` / `.cal__day` / `.pick` / `.slot__pick` 均有 hover、focus-visible、active、disabled |
