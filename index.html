@@ -1032,9 +1032,13 @@ textarea.input{min-height:calc(var(--sp-8) + var(--sp-5));resize:vertical;line-h
   border:var(--bw-1) solid var(--stroke-subtle);
   box-shadow:inset 0 0 46px -14px var(--el,var(--resonance)),0 0 26px -16px var(--el,var(--resonance));
 }
+/* 注意：@keyframes spin 内含 translate(-50%,-50%)，因此所有使用它的元素
+   必须采用「左上角定位到 50%/50% + 显式尺寸」的方式，否则旋转时会被平移半个身位 */
 .echo__sigil::before{
-  content:"";position:absolute;inset:var(--sp-3);border-radius:var(--r-pill);
-  border:var(--bw-1) dashed var(--el,var(--resonance));opacity:.72;
+  content:"";position:absolute;
+  inset-block-start:50%;inset-inline-start:50%;transform:translate(-50%,-50%);
+  width:calc(100% - var(--sp-5));height:calc(100% - var(--sp-5));
+  border-radius:var(--r-pill);border:var(--bw-1) dashed var(--el,var(--resonance));opacity:.72;
   animation:spin var(--spin-dur) linear infinite;
 }
 .echo__sigil::after{
