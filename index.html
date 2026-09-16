@@ -158,11 +158,12 @@
   --halo-soft:0 0 30px -8px var(--resonance), 0 0 70px -24px var(--resonance);
   --elev-3:0 1px 0 rgba(255,255,255,.06), 0 22px 60px rgba(0,0,0,.62);
   --score-grad:linear-gradient(135deg,var(--text-high) 30%,var(--resonance));
-  --radar-max:300px; --radar-fs:10px; --badge-min:118px;
+  --radar-max:320px; --radar-fs:10px; --badge-min:118px;
   --tick:rgba(120,180,200,.20);
   /* 参考图新增：胶囊进度条 / 分段评级 / 符印 / Toast / 文本阴影 */
   --pbar-h:34px; --seg-h:var(--sp-2h); --seg-count:10;
-  --sigil-size:132px; --echo-min:200px;
+  --sigil-size:112px; --echo-min:200px;
+  --ring-size:176px;
   --radar-halo:3px;
   --text-shadow-1:0 1px 2px rgba(0,0,0,.55);
   --toast-line:var(--stroke-accent);
@@ -511,7 +512,7 @@ textarea.input{min-height:calc(var(--sp-8) + var(--sp-5));resize:vertical;line-h
 .hero__cta{display:flex;gap:var(--sp-3);flex-wrap:wrap;margin-top:var(--sp-1)}
 .hero__stats{
   display:grid;gap:var(--sp-4) var(--sp-6);margin-top:var(--sp-3);
-  grid-template-columns:repeat(auto-fit,minmax(min(var(--stat-min),100%),1fr));
+  grid-template-columns:repeat(4,minmax(0,1fr));
   padding-top:var(--sp-4);border-top:var(--bw-1) solid var(--stroke-subtle);width:100%;
 }
 /* DOM 顺序保持 dt → dd（合法结构），视觉上数值在上 */
@@ -616,7 +617,9 @@ textarea.input{min-height:calc(var(--sp-8) + var(--sp-5));resize:vertical;line-h
 .detail-grid .stat__value{font-size:var(--fs-lg)}
 
 /* 配队 */
-.slots{display:grid;gap:var(--sp-3);grid-template-columns:repeat(auto-fit,minmax(min(var(--slot-min),100%),1fr))}
+/* 三槽位并排（参考图 11）；窄屏回落为单列 */
+.slots{display:grid;gap:var(--sp-3);grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:760px){ .slots{grid-template-columns:minmax(0,1fr)} }
 .slot{position:relative;border-radius:var(--r-lg)}
 .slot__pick{
   width:100%;display:grid;gap:var(--sp-2);justify-items:center;align-content:start;
@@ -647,7 +650,7 @@ textarea.input{min-height:calc(var(--sp-8) + var(--sp-5));resize:vertical;line-h
 }
 .slot__clear{position:absolute;inset-block-start:var(--sp-2);inset-inline-end:var(--sp-2)}
 .ring-wrap{display:grid;justify-items:center;gap:var(--sp-2)}
-.ring{width:calc(var(--sp-8) + var(--sp-8));height:calc(var(--sp-8) + var(--sp-8));max-width:100%}
+.ring{width:var(--ring-size);height:var(--ring-size);max-width:100%}
 .ring__track{fill:none;stroke:var(--track);stroke-width:10}
 .ring__bar{
   fill:none;stroke:url(#ringGrad);stroke-width:10;stroke-linecap:round;
@@ -655,7 +658,7 @@ textarea.input{min-height:calc(var(--sp-8) + var(--sp-5));resize:vertical;line-h
   transition:stroke-dashoffset var(--tr-slow);
 }
 .ring__stop-a{stop-color:var(--resonance)} .ring__stop-b{stop-color:var(--sonic)}
-.ring__center{display:grid;justify-items:center;margin-top:calc(-1 * (var(--sp-8) + var(--sp-5)))}
+.ring__center{display:grid;justify-items:center;margin-top:calc(var(--sp-8) - var(--ring-size))}
 .ring__score{font-family:var(--font-num);font-variant-numeric:tabular-nums;font-size:var(--fs-2xl);color:var(--text-high);line-height:1.1}
 .verdict{font-size:var(--fs-caption);color:var(--resonance)}
 .hint-list{display:grid;gap:var(--sp-2)}
@@ -718,7 +721,8 @@ textarea.input{min-height:calc(var(--sp-8) + var(--sp-5));resize:vertical;line-h
 /* ------------------------------------------- 05b 视觉增强层（质感 / 光效 / 入场） */
 
 /* 卡片：顶部发丝高光 + 左上三竖条仪表标记（参考图 04）；导航型卡片附扫光与角标 */
-.card{position:relative}
+/* 顶部留出一条"仪表带"，避免标记被首个内容块（如 COST 胶囊）压住 */
+.card{position:relative;padding-top:var(--sp-5)}
 .card::before{
   content:"";position:absolute;inset-block-start:0;inset-inline:0;height:var(--sp-5);
   pointer-events:none;
@@ -796,7 +800,7 @@ textarea.input{min-height:calc(var(--sp-8) + var(--sp-5));resize:vertical;line-h
 .hero__rings{
   position:absolute;inset-block-start:46%;inset-inline-end:3%;
   width:min(var(--rings-w),62vw);height:auto;
-  transform:translateY(-50%);color:var(--stroke-accent);opacity:.62;
+  transform:translateY(-50%);color:var(--stroke-accent);opacity:.8;
 }
 .hero__rings circle{fill:none;stroke:currentColor;stroke-width:var(--bw-1)}
 .hero__rings line{stroke:var(--stroke-subtle);stroke-width:var(--bw-1)}
@@ -821,6 +825,8 @@ textarea.input{min-height:calc(var(--sp-8) + var(--sp-5));resize:vertical;line-h
 }
 /* Hero 数据分栏 */
 .hero__stats .stat{position:relative;padding-inline-start:var(--sp-4)}
+.hero__stats .stat:first-child{padding-inline-start:0}
+.hero__stats .stat:first-child::before{content:none}
 .hero__stats .stat::before{
   content:"";position:absolute;inset-block:var(--sp-0h);inset-inline-start:0;
   width:var(--bw-1);background:var(--hairline-v);
@@ -1012,6 +1018,10 @@ textarea.input{min-height:calc(var(--sp-8) + var(--sp-5));resize:vertical;line-h
 /* 符印卡（参考图 08）：元素色描边 + 虚线圈 + 刻度环 + 中央字形 + 底部响应纹 */
 .grid--echo{grid-template-columns:repeat(auto-fill,minmax(min(var(--echo-min),100%),1fr))}
 .echo{border-color:var(--stroke-accent-soft)}
+/* 参考图 08：卡片描边本身带元素色（color-mix 不可用时退回青描边） */
+@supports (color: color-mix(in srgb, red 50%, transparent)){
+  .echo{border-color:color-mix(in srgb,var(--el,var(--resonance)) 42%,transparent)}
+}
 .echo:hover{border-color:var(--el,var(--stroke-accent));box-shadow:0 0 0 1px var(--el,var(--resonance)),0 0 34px -10px var(--el,var(--resonance)),var(--elev-1)}
 .echo__sigil{
   position:relative;display:grid;place-items:center;aspect-ratio:1;
@@ -1020,21 +1030,23 @@ textarea.input{min-height:calc(var(--sp-8) + var(--sp-5));resize:vertical;line-h
   background-image:var(--aura-element);
   background-color:var(--surface-deep);
   border:var(--bw-1) solid var(--stroke-subtle);
+  box-shadow:inset 0 0 46px -14px var(--el,var(--resonance)),0 0 26px -16px var(--el,var(--resonance));
 }
 .echo__sigil::before{
   content:"";position:absolute;inset:var(--sp-3);border-radius:var(--r-pill);
-  border:var(--bw-1) dashed var(--el,var(--resonance));opacity:.45;
+  border:var(--bw-1) dashed var(--el,var(--resonance));opacity:.72;
   animation:spin var(--spin-dur) linear infinite;
 }
 .echo__sigil::after{
-  content:"";position:absolute;inset:0;border-radius:var(--r-pill);opacity:.5;
+  content:"";position:absolute;inset:0;border-radius:var(--r-pill);opacity:.75;
   background-image:repeating-conic-gradient(from 0deg,var(--el,var(--resonance)) 0deg .8deg,transparent .8deg 12deg);
   -webkit-mask-image:radial-gradient(circle,transparent 0 70%,var(--mask-solid) 71% 74%,transparent 75%);
   mask-image:radial-gradient(circle,transparent 0 70%,var(--mask-solid) 71% 74%,transparent 75%);
 }
 .echo__initial{
-  position:relative;font-size:var(--fs-2xl);font-weight:600;color:var(--text-high);
-  text-shadow:0 0 var(--sp-4) var(--el,var(--resonance));
+  position:relative;font-size:var(--fs-2xl);font-weight:600;
+  color:var(--el,var(--resonance));
+  text-shadow:0 0 var(--sp-5) var(--el,var(--resonance));
 }
 .segs{display:flex;align-items:center;gap:var(--sp-2h);width:100%}
 .segs__track{display:flex;gap:var(--bw-2);flex:1 1 auto;min-width:0}
@@ -1151,6 +1163,10 @@ body.is-locked{overflow:hidden}
 }
 @media (max-width:680px){
   :root{--cell-h:54px;--wave-h:60px;--avatar:40px;--avatar-lg:56px;--fs-h1:22px;--fs-xl:20px}
+  /* 数据栏降为两列，并去掉行首分隔线 */
+  .hero__stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hero__stats .stat:nth-child(odd){padding-inline-start:0}
+  .hero__stats .stat:nth-child(odd)::before{content:none}
   .news{grid-template-columns:minmax(0,1fr);gap:var(--sp-3)}
   .news__date{grid-auto-flow:column;justify-self:start;gap:var(--sp-1h);align-items:baseline;padding:var(--sp-1) var(--sp-2h)}
   .news__date b{font-size:var(--fs-lg)}
@@ -1571,8 +1587,10 @@ function waveHTML(){
   var out = '';
   var bars = Math.max(8, Math.round(tokenMs('--bars', 40)));
   for(var i = 0; i < bars; i++){
-    /* --i / --h 为数据驱动的振幅参数，不是设计令牌 */
-    var h = 0.24 + 0.76 * Math.abs(Math.sin(i * 0.71)) * Math.abs(Math.cos(i * 0.23 + 1.1));
+    /* --i / --h 为数据驱动的振幅参数，不是设计令牌
+       低频包络（成片起伏）× 高频抖动（逐条差异），贴近参考图的声呐频谱形态 */
+    var env = 0.5 + 0.5 * Math.abs(Math.sin(i / 8.5 + 0.4));
+    var h = 0.14 + 0.86 * env * (0.58 + 0.42 * Math.abs(Math.sin(i * 1.9 + 0.7)));
     out += '<i style="--i:' + i + ';--h:' + h.toFixed(3) + '"></i>';
   }
   return '<div class="wave" aria-hidden="true">' + out + '</div>';
@@ -2109,7 +2127,8 @@ function radarHTML(items){
     return '<text class="radar__label" x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '"' +
       ' text-anchor="' + anchor + '" dominant-baseline="middle">' + esc(it.label) + '</text>';
   }).join('');
-  return '<svg class="radar" viewBox="0 0 224 212" role="img" aria-label="能力雷达图：' +
+  /* viewBox 四周留出标签空间，避免左右顶点标签被裁切 */
+  return '<svg class="radar" viewBox="-30 -10 284 228" role="img" aria-label="能力雷达图：' +
     esc(items.map(function(it){ return it.label + ' ' + it.v + ' 分'; }).join('，')) + '">' +
     grid + axes + '<polygon class="radar__area" points="' + area + '"/>' + dots + labels + '</svg>';
 }
