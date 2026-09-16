@@ -11,6 +11,21 @@ index.html    2200 行 · 117 KB · 0 个外部请求
 
 ---
 
+## 界面预览
+
+![首页](design/refs/shots/01-home.png)
+
+全部截图为无头 Edge 实拍（1200 窗口 ≈ 1166 CSS 视口），存放在 `design/refs/shots/`：
+
+| 页面 | 截图 | 页面 | 截图 |
+|---|---|---|---|
+| 首页 | [01-home.png](design/refs/shots/01-home.png) | 配队模拟 | [05-team.png](design/refs/shots/05-team.png) |
+| 资讯 | [02-news.png](design/refs/shots/02-news.png) | 悲鸣社区 | [06-bbs.png](design/refs/shots/06-bbs.png) |
+| 版本日历 | [03-calendar.png](design/refs/shots/03-calendar.png) | 个人中心 | [07-user.png](design/refs/shots/07-user.png) |
+| 声骸图鉴 | [04-wiki.png](design/refs/shots/04-wiki.png) | 窄屏 518px | [08-narrow-518.png](design/refs/shots/08-narrow-518.png) |
+
+---
+
 ## 快速开始
 
 ```bash

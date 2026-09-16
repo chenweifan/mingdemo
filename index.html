@@ -281,7 +281,7 @@ main#app{position:relative;z-index:var(--z-content);display:block}
   flex-wrap:wrap;margin-bottom:var(--sp-5);
 }
 .page-head__title{font-size:var(--fs-h1)}
-.page-head__desc{color:var(--text-muted);font-size:var(--fs-caption);max-width:var(--max-prose);margin-top:var(--sp-1)}
+.page-head__desc{color:var(--text-muted);font-size:var(--fs-caption);max-width:min(var(--max-prose),100%);margin-top:var(--sp-1)}
 .page-head__actions{display:flex;gap:var(--sp-2);flex-wrap:wrap}
 .grid{display:grid;gap:var(--sp-4);grid-template-columns:repeat(auto-fill,minmax(min(var(--card-min),100%),1fr))}
 .grid--wide{grid-template-columns:repeat(auto-fill,minmax(min(var(--card-min-wide),100%),1fr))}
@@ -290,7 +290,7 @@ main#app{position:relative;z-index:var(--z-content);display:block}
 .stack{display:flex;flex-direction:column;gap:var(--sp-4)}
 .row{display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap}
 .stack *,.split *,.grid *{min-width:0}
-.prose{max-width:var(--max-prose)}
+.prose{max-width:min(var(--max-prose),100%)}
 .muted{color:var(--text-muted)}
 .mt-3{margin-top:var(--sp-3)} .mt-4{margin-top:var(--sp-4)} .mt-5{margin-top:var(--sp-5)}
 .visually-hidden{position:absolute;width:var(--bw-1);height:var(--bw-1);margin:calc(-1 * var(--bw-1));padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
@@ -420,7 +420,7 @@ textarea.input{min-height:calc(var(--sp-8) + var(--sp-5));resize:vertical;line-h
 .empty__art{color:var(--stroke-strong)}
 .empty__art svg{width:calc(var(--sp-8) + var(--sp-5));height:calc(var(--sp-8) + var(--sp-5))}
 .empty__title{color:var(--text-high);font-size:var(--fs-h3)}
-.empty__text{color:var(--text-muted);font-size:var(--fs-caption);max-width:var(--max-prose)}
+.empty__text{color:var(--text-muted);font-size:var(--fs-caption);max-width:min(var(--max-prose),100%)}
 
 /* 骨架屏：200% 宽度 shimmer 扫光 */
 .skeleton{
@@ -1157,6 +1157,8 @@ body.is-locked{overflow:hidden}
   .nav.is-open .nav__links{display:flex}
   .nav__links a{padding:var(--sp-2h) var(--sp-3);font-size:var(--fs-body);border-radius:var(--r-sm)}
   .nav__burger{display:inline-grid}
+  /* 链接转为浮层后失去自动外边距，需把右侧动作组顶到最右 */
+  .nav__actions{margin-inline-start:auto}
   .nav__actions .btn{display:none}
   .wrap{padding:var(--sp-5) var(--sp-4) var(--sp-7)}
   .hero__inner{padding:var(--sp-7) var(--sp-4) var(--sp-5)}

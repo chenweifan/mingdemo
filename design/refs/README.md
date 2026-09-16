@@ -46,6 +46,25 @@
 **未直接采纳的一处**：参考图把 `#4F647A` 标为 OVERLAY PANEL，但该色与正文文本对比度仅 3.5:1（低于 WCAG AA）。
 故模态底色下调为 `#33475E`（正文 5.5:1、高亮文本 7.9:1），`#4F647A` 改作高对比描边色 `--surface-line`。
 
+## 渲染截图 `shots/`
+
+`shots/` 存放站点的实拍截图，用于 README 预览与改版前后对比。采集方式：
+
+```powershell
+msedge --headless=new --disable-gpu --hide-scrollbars --disable-http-cache `
+       --user-data-dir=<临时目录> --window-size=1200,900 --virtual-time-budget=4500 `
+       --screenshot=design/refs/shots/01-home.png `
+       "file:///C:/source/mingdemo/index.html#/home"
+```
+
+**采集注意（踩过的坑）**：headless Chromium 在 Windows 下存在约 **518 CSS px 的最小窗口宽度**，
+`--window-size=390` 会被钳制到 518，而截图只截窗口宽度——于是页面按 518 排版、图片只显示 390，
+右侧被裁掉，**看起来像布局溢出，实际是采集伪影**。判断是否真的溢出应看
+`document.documentElement.scrollWidth > window.innerWidth`，而不是看截图边缘。
+因该钳制，`08-narrow-518.png` 记录的是 518px 视口（覆盖 ≤680 断点）；**≤460 断点尚未实拍验证**。
+
+页面本身在 518 / 746 / 1166 三个视口下均无横向溢出（已用注入探针实测 `scrollWidth` 与元素盒模型）。
+
 ## 后续迭代
 
 换图后重复同一流程即可：新图放进本目录 → 读图 → 按 `DESIGN_PROMPTS.md` 第 7 节的映射表换算令牌 →
