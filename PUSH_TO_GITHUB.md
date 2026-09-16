@@ -57,18 +57,34 @@ git config --global http.lowSpeedTime 60
 ## 3 · 推荐推送方式
 
 ```powershell
-pwsh -File tools/push-github.ps1              # 预检 → 推送 → 失败自动 bundle 兜底
-pwsh -File tools/push-github.ps1 -Branch main
-pwsh -File tools/push-github.ps1 -NoBundle    # 只推送，不生成 bundle
+powershell -ExecutionPolicy Bypass -File tools/push-github.ps1              # 预检 → 推送 → 失败自动 bundle 兜底
+powershell -ExecutionPolicy Bypass -File tools/push-github.ps1 -Branch main
+powershell -ExecutionPolicy Bypass -File tools/push-github.ps1 -NoBundle    # 只推送，不生成 bundle
 ```
+
+> 本机 **`pwsh` 不在 PATH 中**（子进程里 `pwsh` 无法解析），实际可用的是
+> `C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe`（PowerShell 5.1）。
+> 若你装了 PowerShell 7，`pwsh -File tools/push-github.ps1` 同样可用——脚本对两者都兼容。
 
 脚本做了四件事：
 
 1. **只读探测**：识别本地 443 监听进程与 hosts 接管情况，先告诉你链路长什么样；
 2. **连通性预检**：`git ls-remote` 并计时，失败时按错误码直接给出结论（沙箱 / 吊销检查 / 凭据）；
 3. **带加固参数推送**：`http.version=HTTP/1.1`、`schannelCheckRevoke=false`、`lowSpeedLimit/Time`、
-   `GIT_TERMINAL_PROMPT=0`、`credential.interactive=false`（禁止 GUI 弹窗），失败自动重试一次；
+   `GIT_TERMINAL_PROMPT=0`、`credential.interactive=false`（禁止 GUI 弹窗）——即使仓库级配置被覆盖也依然生效；
+   失败自动重试一次，并在推送前比对本地与远端 SHA，已同步则直接跳过；
 4. **失败兜底**：在 `dist-artifacts/<repo>.bundle` 生成含完整历史的 bundle，并打印在正常网络下的推送命令。
+
+实测输出示例：
+
+```
+[push] repo=C:/source/mingdemo branch=main remote=https://github.com/chenweifan/mingdemo.git
+[push] port 443 is served by 'Steam++.Accelerator' (likely a local accelerator)
+[push] hosts file redirects 27 github domains to 127.0.0.1 (accelerator in charge)
+[push] probe OK (1422 ms)
+[push] remote main is already at 68a139d - nothing to push
+[push] result: remote is in sync
+```
 
 ---
 
@@ -132,3 +148,38 @@ git credential-manager github login     # 重新登录
 ```
 
 > 请勿在终端或脚本中回显凭据内容；排障时只需确认「能否通过预检」即可。
+
+---
+
+## 7 · 编写该脚本时踩到的两个 PowerShell 坑
+
+这两条与 GitHub 无关，但都会让「推送脚本」本身失败，记录下来避免重复踩。
+
+### 7.1 PowerShell 5.1 会用 ANSI 编码读取无 BOM 的 .ps1
+
+`tools/push-github.ps1` 的第一版带中文注释、以 UTF-8 无 BOM 保存，结果 PowerShell 5.1 按
+系统 ANSI（GBK）解码源码，中文字节被误解码后**伪造出了引号字符**，解析器直接报出 10 处语法错误：
+
+```
+Unexpected token ')' in expression or statement. @ line 72
+The string is missing the terminator: '. @ line 137
+```
+
+处理方式有两个，任选其一：
+
+- **保持脚本为纯 ASCII**（当前做法）——任何代码页、任何 PowerShell 版本都能正确解析；
+- 或存为 **UTF-8 with BOM**，PowerShell 5.1 见到 BOM 就会按 UTF-8 解码。
+
+中文说明放在本文档（Markdown 始终按 UTF-8 读取）里，不放进脚本源码。
+
+### 7.2 `$ErrorActionPreference='Stop'` 会把 git 的 stderr 升级成终止性错误
+
+git 把推送进度（`To https://...`、`abc..def main -> main`）写到 **stderr**。在
+`$ErrorActionPreference='Stop'` 下，PowerShell 把原生命令的 stderr 包装成 `NativeCommandError`
+并当作终止性错误抛出，于是出现「**推送已经成功、脚本却报失败并以退出码 1 结束**」的假故障。
+
+脚本用 `Invoke-Git` 包装函数解决：调用 git 期间临时切到 `Continue`，把 stderr 当作普通输出行收集，
+再从 `$LASTEXITCODE` 读取真实退出码——既保留 cmdlet 的严格模式，又不会误判 git 的结果。
+
+验证方式：连续执行两次脚本，第一次推送、第二次应识别为「已同步」并退出 0。
+
