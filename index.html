@@ -603,7 +603,6 @@ textarea.input{min-height:calc(var(--sp-8) + var(--sp-5));resize:vertical;line-h
   background:radial-gradient(70% 90% at 50% 104%,var(--el),transparent 72%),var(--surface-sunken);
   border:var(--bw-1) solid var(--stroke-subtle);
 }
-.echo__initial{font-size:var(--fs-2xl);color:var(--text-high);font-weight:600;opacity:.9}
 .echo__name{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);font-size:var(--fs-h3)}
 .echo__set{font-size:var(--fs-micro);color:var(--tide-gold);letter-spacing:var(--ls-caps)}
 .echo__skill{font-size:var(--fs-caption);color:var(--text-muted);overflow-wrap:anywhere}
@@ -1047,11 +1046,14 @@ textarea.input{min-height:calc(var(--sp-8) + var(--sp-5));resize:vertical;line-h
   -webkit-mask-image:radial-gradient(circle,transparent 0 70%,var(--mask-solid) 71% 74%,transparent 75%);
   mask-image:radial-gradient(circle,transparent 0 70%,var(--mask-solid) 71% 74%,transparent 75%);
 }
-.echo__initial{
-  position:relative;font-size:var(--fs-2xl);font-weight:600;
+/* 声骸徽记：元素色线稿头像，带同色辉光 */
+.echo__glyph{
+  position:relative;width:62%;height:62%;
   color:var(--el,var(--resonance));
-  text-shadow:0 0 var(--sp-5) var(--el,var(--resonance));
+  filter:drop-shadow(0 0 var(--sp-2h) var(--el,var(--resonance)));
 }
+.echo__glyph--lg{width:var(--sigil-size);height:var(--sigil-size);max-width:64%}
+.chip-mark .echo__glyph{width:74%;height:74%;filter:none}
 .segs{display:flex;align-items:center;gap:var(--sp-2h);width:100%}
 .segs__track{display:flex;gap:var(--bw-2);flex:1 1 auto;min-width:0}
 .segs__seg{flex:1 1 0;min-width:0;height:var(--seg-h);border-radius:var(--bw-1);background:var(--track)}
@@ -1334,6 +1336,76 @@ function icon(name, cls){
   var body = ICONS[name] || '';
   return '<svg class="icon ' + (cls||'') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
          'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + body + '</svg>';
+}
+
+/* ---------------------------------------------------------------------------
+   1b · 声骸徽记（每件声骸一枚专属线稿头像）
+   全部为内联 SVG 路径：不引入任何外部图片，符合单文件零依赖交付约束。
+   统一 64×64 网格、stroke 走 currentColor（由 --el 元素色驱动）。
+   --------------------------------------------------------------------------- */
+var EMBLEMS = {
+  /* 无常凶鹭 · 长颈涉禽（圆身 + 长颈 + 直喙 + 细腿） */
+  e1:'<circle cx="25" cy="41" r="11"/><path d="M35 33c2-8 7-13 14-15"/>' +
+     '<path d="M49 18l9 3-9 4"/><path d="M20 52v8M31 52v8"/>',
+  /* 鸣钟之龟 · 龟甲穹顶 */
+  e2:'<path d="M10 40a22 16 0 0 1 44 0z"/><path d="M6 40h52"/>' +
+     '<path d="M32 24v16M21 27l-5 13M43 27l5 13"/>',
+  /* 飞廉之猩 · 猿面 */
+  e3:'<path d="M20 28a12 12 0 0 1 24 0v8a12 12 0 0 1-24 0z"/>' +
+     '<path d="M20 30c-6 1-8 5-5 9M44 30c6 1 8 5 5 9"/><path d="M28 40h8"/>' +
+     '<circle cx="27" cy="32" r="2" fill="currentColor" stroke="none"/>' +
+     '<circle cx="37" cy="32" r="2" fill="currentColor" stroke="none"/>',
+  /* 无冠者 · 碎裂王冠 */
+  e4:'<path d="M12 42l5-20 9 9 6-13 6 13 9-9 5 20z"/><path d="M12 42h40"/><path d="M32 10v5"/>',
+  /* 燎照之骑 · 炽焰蹄铁 */
+  e5:'<path d="M18 52c8-1 13-6 15-14s3-14 9-18"/><path d="M24 46l-4 6M42 28l7-3"/>' +
+     '<path d="M40 14c1 4 4 7 8 8-4 2-6 5-6 9"/>',
+  /* 哀声鸷 · 猛禽首 */
+  e6:'<path d="M18 26c0-9 6-14 14-14s14 5 14 14v12c0 9-6 15-14 15s-14-6-14-15z"/>' +
+     '<path d="M32 30l9 5-9 5"/>' +
+     '<circle cx="25" cy="28" r="2" fill="currentColor" stroke="none"/>' +
+     '<circle cx="39" cy="28" r="2" fill="currentColor" stroke="none"/>',
+  /* 幽夜隐者 · 残月与星 */
+  e7:'<path d="M40 12a20 20 0 1 0 0 40 16 16 0 0 1 0-40z"/>' +
+     '<path d="M44 22l1.6 3.4 3.4 1.6-3.4 1.6L44 32l-1.6-3.4L39 27l3.4-1.6z"/>',
+  /* 巡哨机傀 · 机械颅 */
+  e8:'<rect x="16" y="22" width="32" height="22" rx="6"/><path d="M24 33h5M35 33h5"/>' +
+     '<path d="M32 22v-8M24 44v6M40 44v6M10 30v6M54 30v6"/>',
+  /* 蓝鸦 · 鸦首 */
+  e9:'<path d="M14 36c0-11 8-19 18-19s18 8 18 19c0 8-6 14-14 14H24c-6 0-10-6-10-14z"/>' +
+     '<path d="M50 34l8 4-8 4"/><path d="M19 22l-5-7"/>' +
+     '<circle cx="27" cy="31" r="2" fill="currentColor" stroke="none"/>',
+  /* 雪狼 · 狼首 */
+  e10:'<path d="M18 18l-1 14c0 11 7 19 15 19s15-8 15-19l-1-14-8 7H26z"/>' +
+      '<path d="M32 40l-3 3h6z"/>' +
+      '<circle cx="26" cy="34" r="2" fill="currentColor" stroke="none"/>' +
+      '<circle cx="38" cy="34" r="2" fill="currentColor" stroke="none"/>',
+  /* 磐石守卫 · 护盾与晶核 */
+  e11:'<path d="M32 10l18 7v13c0 11-8 19-18 22-10-3-18-11-18-22V17z"/>' +
+      '<path d="M32 22l7 8-7 12-7-12z"/>',
+  /* 绿熔蜥蜴 · 蜥形（头 + 脊 + 长尾 + 四足） */
+  e12:'<circle cx="15" cy="38" r="6"/><path d="M21 40h17"/><path d="M38 40c6-1 10-5 13-11"/>' +
+      '<path d="M25 40l-4 9M34 40l-4 9"/>' +
+      '<circle cx="13" cy="36" r="1.4" fill="currentColor" stroke="none"/>',
+  /* 呼咻咻 · 旋风 */
+  e13:'<path d="M33 32c0-5 7-6 8-1s-7 10-13 7-9-13-3-18 19-2 21 7"/>' +
+      '<path d="M12 44c7 4 15 6 22 6"/>',
+  /* 熔山裂谷 · 山脊裂隙 */
+  e14:'<path d="M8 48l14-26 7 11 6-9 13 24z"/><path d="M29 33l-6 15M23 48h12"/>' +
+      '<path d="M36 22l3 5"/>',
+  /* 咕咕伞 · 伞盖 */
+  e15:'<path d="M10 34a22 22 0 0 1 44 0z"/><path d="M32 34v14a5 5 0 0 0 10 0"/>' +
+      '<path d="M22 34c0-8 4-14 10-14s10 6 10 14"/>',
+  /* 阿嗞嗞 · 电球 */
+  e16:'<circle cx="32" cy="32" r="11"/>' +
+      '<path d="M32 13V6M32 58v-7M13 32H6M58 32h-7"/><path d="M36 22l-9 12h9l-5 12"/>'
+};
+function emblemSVG(id, cls){
+  var body = EMBLEMS[id];
+  if(!body) return '';
+  return '<svg class="echo__glyph ' + (cls || '') + '" viewBox="0 0 64 64" fill="none" ' +
+         'stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ' +
+         'aria-hidden="true">' + body + '</svg>';
 }
 
 /* ==========================================================================
@@ -1825,7 +1897,7 @@ function echoCard(e){
         ' data-focus="fav-' + e.id + '" aria-pressed="' + fav + '" aria-label="' + (fav ? '取消收藏 ' : '收藏 ') + esc(e.name) + '">' +
         icon('bookmark') + '</button>' +
     '</div>' +
-    '<div class="echo__sigil" aria-hidden="true"><span class="echo__initial">' + esc(e.name.slice(0,1)) + '</span></div>' +
+    '<div class="echo__sigil" aria-hidden="true">' + emblemSVG(e.id) + '</div>' +
     '<h3 class="echo__name">' + esc(e.name) +
       '<span class="tag tag--elem" style="--el:' + elemVar(e.element) + '">' + elemLabel(e.element) + '</span></h3>' +
     '<p class="echo__set">' + esc(e.set) + ' · 声骸套装</p>' +
@@ -2154,7 +2226,7 @@ function viewUser(s, u){
     if(ECHO_BY_ID[id]){
       var e = ECHO_BY_ID[id];
       return '<div class="fav-item" style="--el:' + elemVar(e.element) + '">' +
-        '<span class="chip-mark" aria-hidden="true">' + esc(e.name.slice(0,1)) + '</span>' +
+        '<span class="chip-mark" aria-hidden="true">' + emblemSVG(e.id) + '</span>' +
         '<span><span class="fav-item__name">' + esc(e.name) + '</span>' +
         '<span class="fav-item__meta">声骸 · COST ' + e.cost + ' · ' + elemLabel(e.element) + ' · 评级 <span class="num">' + e.rating.toFixed(1) + '</span></span></span>' +
         '<button class="icon-btn" type="button" data-act="fav-remove" data-id="' + id + '" data-focus="favrm-' + id + '" aria-label="移除收藏 ' + esc(e.name) + '">' + icon('trash') + '</button>' +
@@ -2437,7 +2509,7 @@ function openEcho(id){
     sub:'COST ' + e.cost + ' · ' + elemLabel(e.element) + ' · ' + e.set,
     title:esc(e.name),
     body:'<div class="echo__art" style="--el:' + elemVar(e.element) + ';height:calc(var(--sp-8) + var(--sp-7))" aria-hidden="true">' +
-           '<span class="echo__initial">' + esc(e.name.slice(0,1)) + '</span></div>' +
+           emblemSVG(e.id, 'echo__glyph--lg') + '</div>' +
          '<div class="detail-grid">' +
            '<div class="stat"><span class="stat__value">' + e.cost + '</span><span class="stat__label">COST</span></div>' +
            '<div class="stat"><span class="stat__value">' + e.rating.toFixed(1) + '</span><span class="stat__label">共鸣评级</span></div>' +

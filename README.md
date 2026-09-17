@@ -262,9 +262,10 @@ mingdemo/
 ├── DESIGN_PROMPTS.md       # 界面 UI 组件生图提示词包（风格基准图 → 回灌 CSS 的完整工作流）
 ├── PUSH_TO_GITHUB.md       # 本机 GitHub 加速链路（Watt Toolkit）的推送指南与故障排查对照表
 ├── .gitignore              # 忽略 dist-artifacts/ 与参考图本体
-├── design/refs/            # 风格参考图放置目录（含命名约定，图片不入库）
+├── design/refs/            # 风格参考图与渲染截图（shots/ 入库，AI 参考图不入库）
 └── tools/
-    └── push-github.ps1     # 推送加固脚本：环境探测 → 连通性预检 → 加固参数推送 → 失败自动 bundle 兜底
+    ├── push-github.ps1     # 推送加固脚本：环境探测 → 连通性预检 → 加固参数推送 → 失败自动 bundle 兜底
+    └── emblem-sheet.js     # 声骸徽记对照表生成器：并排检查 16 枚内联 SVG 徽记的造型与配色
 ```
 
 站点本身仍是**单文件零依赖**：`index.html` 之外的文件都只是开发与运维辅助，不参与页面运行，
